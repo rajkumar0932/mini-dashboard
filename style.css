@@ -47,7 +47,8 @@ body {
     padding: 2rem 1rem;
     display: flex;
     flex-direction: column;
-    transition: width 0.3s ease;
+    transition: transform 0.3s ease;
+    z-index: 100;
 }
 
 .profile { text-align: center; margin-bottom: 3rem; }
@@ -132,6 +133,28 @@ button {
 }
 button:hover { background: var(--accent-hover); }
 
+/* Mobile Header Styles */
+.mobile-header {
+    display: none;
+    background: var(--sidebar-color);
+    padding: 1rem;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+}
+#menu-toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
 /* Schedule Table Styles */
 .schedule-table { width: 100%; border-collapse: separate; border-spacing: 0.5rem; }
 .schedule-table th, .schedule-table td { padding: 1rem; text-align: center; }
@@ -155,15 +178,37 @@ button:hover { background: var(--accent-hover); }
     gap: 1.5rem;
     align-items: start;
 }
-.chart-container { min-height: 550px; } /* Increased height for a larger graph */
+.chart-container { min-height: 550px; }
 .reference-card h3 { font-size: 1.1rem; margin-bottom: 1rem; }
 .reference-card ul { list-style: none; padding: 0; }
 .reference-card li { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
 .reference-card li:last-child { border-bottom: none; }
 .reference-card strong { font-weight: 500; color: var(--secondary-text); }
 .reference-card span { font-weight: 600; color: var(--primary-text); }
-@media (max-width: 992px) {
-    .dashboard-bottom-grid { grid-template-columns: 1fr; }
+.ref-divider {
+    border: none;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+    margin: 1rem 0;
+}
+.cgpa-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+.cgpa-input-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--secondary-text);
+}
+.cgpa-input-group input {
+    margin-bottom: 0;
+    text-align: center;
+}
+.cgpa-input-group button {
+    padding: 0.6rem;
+    font-size: 0.9rem;
 }
 
 /* Subject Colors */
@@ -227,6 +272,23 @@ button:hover { background: var(--accent-hover); }
 .add-subject-form { display: flex; gap: 0.5rem; }
 .add-subject-form input { margin-bottom: 0; }
 .add-subject-form button { padding: 0.8rem; flex-shrink: 0; line-height: 1; }
+.attendance-summary-card {
+    margin-top: 2rem;
+    text-align: center;
+}
+.attendance-summary-card .section-title {
+    margin-top: 0;
+    text-align: left;
+}
+.attendance-summary-card .summary-percentage {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+.attendance-summary-card .progress-bar-container {
+    height: 1rem;
+    margin: 1rem 0;
+}
 
 /* --- Assignment Tracker Styles --- */
 .add-assignment-form { display: grid; grid-template-columns: 2fr 1fr auto; gap: 0.75rem; align-items: center; }
@@ -244,11 +306,6 @@ button:hover { background: var(--accent-hover); }
 .delete-assignment-btn:hover { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; }
 .no-assignments-card { text-align: center; padding: 2rem; color: var(--secondary-text); }
 .no-assignments-card i { font-size: 2rem; margin-bottom: 0.5rem; }
-@media (max-width: 640px) {
-    .add-assignment-form { grid-template-columns: 1fr; }
-    .add-assignment-form input, .add-assignment-form button { margin-bottom: 0.5rem; }
-    .add-assignment-form button { margin-bottom: 0; }
-}
 
 /* --- Modal Styles --- */
 .modal-overlay {
@@ -258,7 +315,7 @@ button:hover { background: var(--accent-hover); }
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
-    display: none; /* Hidden by default */
+    display: none;
     align-items: center;
     justify-content: center;
     z-index: 1000;
@@ -278,7 +335,7 @@ button:hover { background: var(--accent-hover); }
 .modal-actions { display: flex; justify-content: flex-end; gap: 1rem; }
 .modal-actions button { padding: 0.6rem 1.2rem; }
 #modal-cancel-btn { background-color: var(--secondary-text); }
-#modal-confirm-btn { background-color: #ef4444; } /* red */
+#modal-confirm-btn { background-color: #ef4444; }
 
 /* --- LeetCode Stats Page --- */
 .leetcode-grid {
@@ -301,46 +358,78 @@ button:hover { background: var(--accent-hover); }
 .streak-info span { color: var(--primary-text); font-weight: 600; }
 .leetcode-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 .leetcode-chart-container { min-height: 350px; }
-@media (max-width: 992px) {
-    .leetcode-grid, .leetcode-charts { grid-template-columns: 1fr; }
-}
 
 /* --- Feedback Form Styles --- */
-.feedback-form {
-    display: grid;
-    gap: 1rem;
-}
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: var(--secondary-text);
-}
-.feedback-form input, .feedback-form select, .feedback-form textarea {
-    margin-bottom: 0; /* Remove default bottom margin */
-}
-.feedback-form button {
-    width: 100%;
-    margin-top: 1rem;
-    padding: 1rem;
-    font-size: 1rem;
-}
+.feedback-form { display: grid; gap: 1rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--secondary-text); }
+.feedback-form input, .feedback-form select, .feedback-form textarea { margin-bottom: 0; }
+.feedback-form button { width: 100%; margin-top: 1rem; padding: 1rem; font-size: 1rem; }
 
-/* --- Attendance Summary Styles --- */
-.attendance-summary-card {
-    margin-top: 2rem;
-    text-align: center;
-}
-.attendance-summary-card .section-title {
-    margin-top: 0;
-    text-align: left;
-}
-.attendance-summary-card .summary-percentage {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin: 0.5rem 0;
-}
-.attendance-summary-card .progress-bar-container {
-    height: 1rem;
-    margin: 1rem 0;
+
+/* --- Responsive Styles --- */
+@media (max-width: 768px) {
+    #app {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .content {
+        padding-top: 5rem;
+    }
+    
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .dashboard-bottom-grid, .leetcode-grid, .leetcode-charts {
+        grid-template-columns: 1fr;
+    }
+
+    .add-assignment-form {
+        grid-template-columns: 1fr;
+    }
+
+    .page-title {
+        font-size: 2rem;
+    }
+
+    /* --- Responsive Schedule Styles --- */
+    .schedule-table thead {
+        display: none;
+    }
+    .schedule-table tr {
+        display: block;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 1rem;
+    }
+    .schedule-table td {
+        display: block;
+        text-align: right;
+        padding: 0.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .schedule-table td:last-child {
+        border-bottom: none;
+    }
+    .schedule-table td::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: 600;
+        color: var(--secondary-text);
+    }
 }
