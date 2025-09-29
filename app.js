@@ -3,12 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('.nav-link');
 
     // --- MOCK DATA & STATE MANAGEMENT ---
+    
+    let userCGPA = 8.5; // Your CGPA, can be changed from the dashboard
 
-    // Dashboard Data
-    const weeklyTargets = { assignments: 6, codingStreak: 7, problemsSolved: 20, contestsJoined: 4, attendance: 100 };
-    const currentProgress = { assignments: 1, codingStreak: 12, problemsSolved: 15, contestsJoined: 2, attendance: 85 };
+    const progressData = {
+        contestsJoined: 2
+    };
 
-    // Attendance Data
     let attendanceData = {
         'ADC(TM)': { attended: 1, total: 2 },
         'DSP(SRC)': { attended: 1, total: 4 },
@@ -18,63 +19,78 @@ document.addEventListener('DOMContentLoaded', () => {
         'MPMC': { attended: 1, total: 3 },
     };
 
-    // Assignment Data
     let assignments = [
         { id: 1, title: 'DSP Lab Report', deadline: '2025-10-05' },
         { id: 2, title: 'MPMC Project Phase 1', deadline: '2025-10-10' },
         { id: 3, title: 'EIM Presentation', deadline: '2025-09-30' }
     ];
 
-    // LeetCode Stats Data
     let leetCodeStats = {
         easy: 120,
         medium: 250,
         hard: 55,
         contestRating: 1850,
-        streak: 3
+        streak: 11
     };
     let streakDates = ['2025-09-28', '2025-09-29', '2025-09-30'];
     
-    // --- PAGE TEMPLATES ---
+    // --- HELPER FUNCTIONS FOR DYNAMIC DATA ---
+    const calculateOverallAttendance = () => {
+        const totalAttended = Object.values(attendanceData).reduce((sum, subject) => sum + subject.attended, 0);
+        const totalClasses = Object.values(attendanceData).reduce((sum, subject) => sum + subject.total, 0);
+        if (totalClasses === 0) return { percentage: 0, attended: 0, total: 0 };
+        return {
+            percentage: Math.round((totalAttended / totalClasses) * 100),
+            attended: totalAttended,
+            total: totalClasses
+        };
+    };
+
+    const getTotalProblemsSolved = () => leetCodeStats.easy + leetCodeStats.medium + leetCodeStats.hard;
+
+    // --- PAGE TEMPLATES (NOW WITH A FUNCTION FOR THE DASHBOARD) ---
 
     const pages = {
-        dashboard: `
+        getDashboard: () => `
             <div class="page-title">
                 <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=raj" alt="Profile Picture">
                 <span>Hi, raj</span>
             </div>
-            <p class="card">"The way to get started is to quit talking and begin doing." — Walt Disney</p>
             <div class="dashboard-grid">
                 <div class="card stat-card stat-card-blue">
-                    <i class="fas fa-tasks"></i>
-                    <h3>${assignments.length}</h3>
-                    <p>Pending Assignments</p>
+                    <i class="fas fa-user-check"></i>
+                    <h3>${calculateOverallAttendance().percentage}%</h3>
+                    <p>Overall Attendance</p>
                 </div>
                 <div class="card stat-card stat-card-green">
-                    <i class="fas fa-laptop-code"></i>
-                    <h3>${currentProgress.codingStreak}</h3>
-                    <p>Coding Streak</p>
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>${userCGPA.toFixed(2)}</h3>
+                    <p>Current CGPA</p>
                 </div>
                 <div class="card stat-card stat-card-yellow">
                     <i class="fas fa-check-circle"></i>
-                    <h3>${currentProgress.problemsSolved}</h3>
+                    <h3>${getTotalProblemsSolved()}</h3>
                     <p>Problems Solved</p>
                 </div>
             </div>
-            <h2 class="section-title">Weekly Progress</h2>
+            <h2 class="section-title">Lifetime Progress</h2>
             <div class="dashboard-bottom-grid">
                 <div class="card chart-container">
                     <canvas id="performanceChart"></canvas>
                 </div>
                 <div class="card reference-card">
-                    <h3>Reference (Weekly Targets)</h3>
+                    <h3>Reference</h3>
                     <ul>
-                        <li><strong>Attendance:</strong><span>${currentProgress.attendance}%</span></li>
-                        <li><strong>Assignments Done:</strong><span>${currentProgress.assignments}/${weeklyTargets.assignments}</span></li>
-                        <li><strong>Coding Streak:</strong><span>${currentProgress.codingStreak}/${weeklyTargets.codingStreak} days</span></li>
-                        <li><strong>Problems Solved:</strong><span>${currentProgress.problemsSolved}/${weeklyTargets.problemsSolved}</span></li>
-                        <li><strong>Contests Joined:</strong><span>${currentProgress.contestsJoined}/${weeklyTargets.contestsJoined}</span></li>
+                        <li><strong>Overall Attendance:</strong><span>${calculateOverallAttendance().percentage}%</span></li>
+                        <li><strong>CGPA:</strong><span>${userCGPA.toFixed(2)} / 10.0</span></li>
+                        <li><strong>Problems Solved:</strong><span>${getTotalProblemsSolved()}</span></li>
                     </ul>
+                    <hr class="ref-divider">
+                    <div class="cgpa-input-group">
+                        <label for="cgpa-input">Update CGPA:</label>
+                        <input type="number" id="cgpa-input" step="0.01" placeholder="${userCGPA.toFixed(2)}">
+                        <button id="save-cgpa-btn">Save</button>
+                    </div>
                 </div>
             </div>
         `,
@@ -115,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
             <div class="attendance-grid" id="attendance-grid-container"></div>
+            <div id="attendance-summary-container"></div>
         `,
         assignments: `
             <h1 class="page-title">Assignment Tracker</h1>
@@ -167,9 +184,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         `,
-        'codeforces-stats': `<h1 class="page-title">Codeforces Stats</h1><div class="card"><p>Codeforces statistics will be displayed here.</p></div>`,
-        calendar: `<h1 class="page-title">CP Calendar</h1><div class="card"><p>CP Calendar content goes here.</p></div>`,
-        feedback: `<h1 class="page-title">Feedback</h1><div class="card"><p>Feedback form goes here.</p></div>`
+        feedback: `
+            <h1 class="page-title">Submit Feedback</h1>
+            <div class="card">
+                <form id="feedback-form" class="feedback-form">
+                    <div class="form-group">
+                        <label for="feedback-name">Your Name</label>
+                        <input type="text" id="feedback-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="feedback-email">Your Email</label>
+                        <input type="email" id="feedback-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="feedback-type">Feedback Type</label>
+                        <select id="feedback-type" required>
+                            <option value="">--Please choose an option--</option>
+                            <option value="bug">Bug Report</option>
+                            <option value="suggestion">Suggestion</option>
+                            <option value="compliment">Compliment</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="feedback-message">Message</label>
+                        <textarea id="feedback-message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit">Submit Feedback</button>
+                </form>
+            </div>
+        `
     };
 
     // --- Chart instances need to be tracked to destroy them before re-rendering ---
@@ -179,14 +222,22 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- GENERAL PAGE RENDERER ---
     function renderPage(pageName) {
-        if (!pages[pageName]) {
+        if (!pages[pageName] && pageName !== 'dashboard') {
             console.error(`Page "${pageName}" not found.`);
             return;
         }
-        contentArea.innerHTML = pages[pageName];
+
+        if (pageName === 'dashboard') {
+            contentArea.innerHTML = pages.getDashboard();
+        } else {
+            contentArea.innerHTML = pages[pageName];
+        }
 
         // Attach event listeners for the specific page
-        if (pageName === 'dashboard') renderPerformanceChart();
+        if (pageName === 'dashboard') {
+            renderPerformanceChart();
+            setupDashboardListeners(); // Add listeners for dashboard-specific elements
+        }
         if (pageName === 'attendance') {
             renderAttendanceTracker();
             setupAttendanceListeners();
@@ -198,8 +249,53 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageName === 'leetcode-stats') {
             renderLeetCodeStatsPage();
         }
+        if (pageName === 'feedback') {
+            setupFeedbackListeners();
+        }
     }
     
+    // --- DASHBOARD LISTENERS ---
+    function setupDashboardListeners() {
+        const saveCgpaBtn = document.getElementById('save-cgpa-btn');
+        const cgpaInput = document.getElementById('cgpa-input');
+
+        if (saveCgpaBtn && cgpaInput) {
+            saveCgpaBtn.addEventListener('click', () => {
+                const newCgpa = parseFloat(cgpaInput.value);
+                if (!isNaN(newCgpa) && newCgpa >= 0 && newCgpa <= 10) {
+                    userCGPA = newCgpa;
+                    renderPage('dashboard'); // Re-render the dashboard to show updated CGPA
+                } else {
+                    openModal({
+                        title: 'Invalid Input',
+                        body: 'Please enter a valid CGPA between 0 and 10.',
+                        onConfirm: closeModal,
+                        confirmText: 'OK'
+                    });
+                }
+            });
+        }
+    }
+
+    // --- FEEDBACK PAGE LISTENERS ---
+    function setupFeedbackListeners() {
+        const feedbackForm = document.getElementById('feedback-form');
+        if (feedbackForm) {
+            feedbackForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                openModal({
+                    title: 'Feedback Submitted',
+                    body: 'Thank you for your valuable feedback!',
+                    onConfirm: () => {
+                        feedbackForm.reset();
+                        closeModal();
+                    },
+                    confirmText: 'OK'
+                });
+            });
+        }
+    }
+
     // --- LEETCODE STATS PAGE ---
     function renderLeetCodeStatsPage() {
         renderLcCharts();
@@ -215,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const radarCtx = document.getElementById('lcRadarChart');
         if (!pieCtx || !radarCtx) return;
 
-        const total = leetCodeStats.easy + leetCodeStats.medium + leetCodeStats.hard;
+        const total = getTotalProblemsSolved();
         const totalCard = document.getElementById('total-questions-card');
         
         if (!totalCard) {
@@ -226,7 +322,6 @@ document.addEventListener('DOMContentLoaded', () => {
              totalCard.querySelector('h2').textContent = `Total Questions Solved: ${total}`;
         }
         
-        // Pie Chart
         lcPieChartInstance = new Chart(pieCtx, {
             type: 'pie',
             data: {
@@ -241,16 +336,10 @@ document.addEventListener('DOMContentLoaded', () => {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: { color: 'var(--primary-text)', font: { size: 14, family: 'Poppins' } }
-                    }
-                }
+                plugins: { legend: { position: 'top', labels: { color: 'var(--primary-text)', font: { size: 14, family: 'Poppins' } } } }
             }
         });
 
-        // Radar Chart
         lcRadarChartInstance = new Chart(radarCtx, {
             type: 'radar',
             data: {
@@ -261,8 +350,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         (leetCodeStats.easy / total) * 100,
                         (leetCodeStats.medium / total) * 100,
                         (leetCodeStats.hard / total) * 100,
-                        (leetCodeStats.streak / 30) * 100, // Assuming a max streak of 30 for scaling
-                        ((leetCodeStats.contestRating - 1500) / 1000) * 100 // Scale rating
+                        (leetCodeStats.streak / 30) * 100,
+                        ((leetCodeStats.contestRating - 1500) / 1000) * 100
                     ],
                     backgroundColor: 'rgba(139, 92, 246, 0.2)',
                     borderColor: 'rgba(255, 255, 255, 0.8)',
@@ -337,20 +426,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- FIXED STREAK CALCULATION ---
     function calculateStreak() {
         if (streakDates.length === 0) return 0;
-
-        // Create a set of date timestamps for quick lookups
         const markedTimestamps = new Set(streakDates.map(d => new Date(d).getTime()));
         const sortedDates = streakDates.map(d => new Date(d)).sort((a, b) => b - a);
-        
         let longestStreak = 0;
-
         for (const date of sortedDates) {
             let currentStreak = 0;
             let currentDate = new Date(date);
-
             while (markedTimestamps.has(currentDate.getTime())) {
                 currentStreak++;
                 currentDate.setDate(currentDate.getDate() - 1);
@@ -371,7 +454,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modal-body').innerHTML = body;
         const confirmBtn = document.getElementById('modal-confirm-btn');
         confirmBtn.textContent = confirmText;
-        
         onConfirmCallback = onConfirm;
         overlay.style.display = 'flex';
     }
@@ -384,18 +466,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Performance Chart Function ---
     function renderPerformanceChart() {
-        if (performanceChartInstance) {
-            performanceChartInstance.destroy();
-        }
+        if (performanceChartInstance) performanceChartInstance.destroy();
         const ctx = document.getElementById('performanceChart');
         if (!ctx) return;
-
+        
         const performanceData = {
-            'Attendance %': Math.min(currentProgress.attendance, 100),
-            'Assignments Done': Math.min((currentProgress.assignments / weeklyTargets.assignments) * 100, 100),
-            'Coding Streak': Math.min((currentProgress.codingStreak / weeklyTargets.codingStreak) * 100, 100),
-            'Problems Solved': Math.min((currentProgress.problemsSolved / weeklyTargets.problemsSolved) * 100, 100),
-            'Contests Joined': Math.min((currentProgress.contestsJoined / weeklyTargets.contestsJoined) * 100, 100)
+            'Attendance %': calculateOverallAttendance().percentage,
+            'CGPA': (userCGPA / 10) * 100, // Scale CGPA to percentage
+            'Problems Solved': Math.min((getTotalProblemsSolved() / 500) * 100, 100)
         };
 
         performanceChartInstance = new Chart(ctx, {
@@ -403,29 +481,25 @@ document.addEventListener('DOMContentLoaded', () => {
             data: {
                 labels: Object.keys(performanceData),
                 datasets: [{
-                    label: 'Weekly Performance',
+                    label: 'Lifetime Performance',
                     data: Object.values(performanceData),
-                    backgroundColor: 'rgba(139, 92, 246, 0.2)',
-                    borderColor: 'rgba(255, 255, 255, 0.8)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderColor: 'rgba(96, 165, 250, 1)',
                     pointBackgroundColor: '#fff',
-                    pointBorderColor: '#8b5cf6',
-                    pointHoverBackgroundColor: '#8b5cf6',
+                    pointBorderColor: 'rgba(96, 165, 250, 1)',
+                    pointHoverBackgroundColor: 'rgba(96, 165, 250, 1)',
                     pointHoverBorderColor: '#fff',
-                    borderWidth: 2,
+                    borderWidth: 3,
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                aspectRatio: 1.5,
                 scales: {
                     r: {
-                        angleLines: { color: 'rgba(255, 255, 255, 0.2)' },
-                        grid: { color: 'rgba(255, 255, 255, 0.2)' },
-                        pointLabels: {
-                            color: '#e2e8f0',
-                            font: { size: 14, family: 'Poppins' }
-                        },
+                        angleLines: { color: 'rgba(226, 232, 240, 0.2)' },
+                        grid: { color: 'rgba(226, 232, 240, 0.2)' },
+                        pointLabels: { color: '#e2e8f0', font: { size: 16, family: 'Poppins', weight: '600' } },
                         ticks: {
                             backdropColor: 'rgba(15, 23, 42, 0.8)',
                             color: '#94a3b8',
@@ -436,19 +510,23 @@ document.addEventListener('DOMContentLoaded', () => {
                          suggestedMax: 100
                     }
                 },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) { label += ': '; }
-                                if (context.parsed.r !== null) { label += context.parsed.r.toFixed(2) + '%'; }
-                                return label;
+                plugins: { legend: { display: false }, tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) { label += ': '; }
+                            if (context.parsed.r !== null) {
+                                // De-scale CGPA for tooltip
+                                if (context.label === 'CGPA') {
+                                    label += ((context.parsed.r / 100) * 10).toFixed(2);
+                                } else {
+                                    label += context.parsed.r.toFixed(0) + '%';
+                                }
                             }
+                            return label;
                         }
                     }
-                }
+                } }
             }
         });
     }
@@ -461,7 +539,6 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = Object.entries(attendanceData).map(([subject, data]) => {
             const percentage = data.total > 0 ? Math.round((data.attended / data.total) * 100) : 0;
             const progressColor = percentage < 75 ? 'red' : percentage < 85 ? 'yellow' : 'green';
-
             return `
                 <div class="card subject-card" data-subject="${subject}">
                     <div class="subject-header">
@@ -484,6 +561,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
         }).join('');
+
+        const overall = calculateOverallAttendance();
+        const progressColor = overall.percentage < 75 ? 'red' : overall.percentage < 85 ? 'yellow' : 'green';
+        const summaryHTML = `
+            <div class="card attendance-summary-card">
+                <h3 class="section-title">Overall Summary</h3>
+                <div class="summary-percentage percentage-${progressColor}">${overall.percentage}%</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill progress-bar-${progressColor}" style="width: ${overall.percentage}%"></div>
+                </div>
+                <div class="attendance-details">${overall.attended} / ${overall.total} total classes attended</div>
+            </div>
+        `;
+        
+        const summaryContainer = document.getElementById('attendance-summary-container');
+        if(summaryContainer) {
+            summaryContainer.innerHTML = summaryHTML;
+        }
     }
     
     function setupAttendanceListeners() {
@@ -491,47 +586,49 @@ document.addEventListener('DOMContentLoaded', () => {
         const addButton = document.getElementById('add-subject-btn');
         const newSubjectInput = document.getElementById('new-subject-name');
 
-        addButton.addEventListener('click', () => {
-            const subjectName = newSubjectInput.value.trim();
-            if (subjectName && !attendanceData[subjectName]) {
-                attendanceData[subjectName] = { attended: 0, total: 0 };
-                newSubjectInput.value = '';
-                renderAttendanceTracker();
-            }
-        });
+        if (addButton) {
+            addButton.addEventListener('click', () => {
+                const subjectName = newSubjectInput.value.trim();
+                if (subjectName && !attendanceData[subjectName]) {
+                    attendanceData[subjectName] = { attended: 0, total: 0 };
+                    newSubjectInput.value = '';
+                    renderAttendanceTracker();
+                }
+            });
+        }
 
-        container.addEventListener('click', (e) => {
-            const button = e.target.closest('button');
-            if (!button) return;
+        if (container) {
+            container.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (!button) return;
 
-            const card = button.closest('.subject-card');
-            const subject = card.dataset.subject;
-            const action = button.dataset.action;
+                const card = button.closest('.subject-card');
+                const subject = card.dataset.subject;
+                const action = button.dataset.action;
 
-            if (action === 'present') {
-                attendanceData[subject].attended++;
-                attendanceData[subject].total++;
-            } else if (action === 'absent') {
-                attendanceData[subject].total++;
-            } else if (action === 'delete') {
-                 openModal({
-                    title: 'Delete Subject',
-                    body: `<p>Are you sure you want to delete the subject: "<strong>${subject}</strong>"?</p>`,
-                    onConfirm: () => {
-                        delete attendanceData[subject];
-                        renderAttendanceTracker();
-                        closeModal();
-                    },
-                    confirmText: 'Delete'
-                });
-            }
-            if (action === 'present' || action === 'absent') {
-                renderAttendanceTracker();
-            }
-        });
+                if (action === 'present') {
+                    attendanceData[subject].attended++;
+                    attendanceData[subject].total++;
+                    renderAttendanceTracker();
+                } else if (action === 'absent') {
+                    attendanceData[subject].total++;
+                    renderAttendanceTracker();
+                } else if (action === 'delete') {
+                    openModal({
+                        title: 'Delete Subject',
+                        body: `<p>Are you sure you want to delete the subject: "<strong>${subject}</strong>"?</p>`,
+                        onConfirm: () => {
+                            delete attendanceData[subject];
+                            renderAttendanceTracker();
+                            closeModal();
+                        },
+                        confirmText: 'Delete'
+                    });
+                }
+            });
+        }
     }
     
-    // --- Assignment Tracker Functions ---
     function renderAssignments() {
         const container = document.getElementById('assignment-list-container');
         if (!container) return;
@@ -671,4 +768,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initializeApp();
 });
-
