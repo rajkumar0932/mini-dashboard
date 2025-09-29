@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sagar's Homepage</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- Chart.js for the radar graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="animated-background"></div>
+
+      <!-- Sidebar -->
+      <nav class="sidebar">
+        <div class="profile">
+          <img
+            src="https://api.dicebear.com/7.x/adventurer/svg?seed=raj"
+            alt="Profile Picture"
+          />
+          <h3>raj</h3>
+        </div>
+        <ul class="nav-menu">
+          <li>
+            <a href="#" class="nav-link" data-page="dashboard"
+              ><i class="fas fa-home"></i><span>Dashboard</span></a
+            >
+          </li>
+
+          <li class="nav-category">College & Life</li>
+          <li>
+            <a href="#" class="nav-link" data-page="schedule"
+              ><i class="fas fa-calendar-alt"></i><span>Schedule</span></a
+            >
+          </li>
+          <li>
+            <a href="#" class="nav-link" data-page="attendance"
+              ><i class="fas fa-check-circle"></i><span>Attendance</span></a
+            >
+          </li>
+          <li>
+            <a href="#" class="nav-link" data-page="assignments"
+              ><i class="fas fa-tasks"></i><span>Assignments</span></a
+            >
+          </li>
+
+          <li class="nav-category">Coding</li>
+           <li>
+                <a href="#" class="nav-link" data-page="leetcode-stats">
+                    <i class="fas fa-keyboard"></i><span>LeetCode Stats</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link" data-page="codeforces-stats">
+                   <i class="fas fa-chart-line"></i> <span>Codeforces Stats</span>
+                </a>
+            </li>
+
+          <li class="nav-category">Other</li>
+          <li>
+            <a href="#" class="nav-link" data-page="feedback"
+              ><i class="fas fa-comment-dots"></i><span>Feedback</span></a
+            >
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="content">
+        <!-- Content will be dynamically injected here -->
+      </main>
+    </div>
+    
+    <!-- Custom Modal Placeholder -->
+    <div id="custom-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="modal-title"></h2>
+            <div id="modal-body"></div>
+            <div class="modal-actions">
+                <button id="modal-cancel-btn">Cancel</button>
+                <button id="modal-confirm-btn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
+

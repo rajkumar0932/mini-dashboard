@@ -1,0 +1,395 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root {
+    --background-color: #0f172a;
+    --sidebar-color: rgba(30, 41, 59, 0.5);
+    --card-color: rgba(30, 41, 59, 0.7);
+    --primary-text: #e2e8f0;
+    --secondary-text: #94a3b8;
+    --accent-color: #8b5cf6;
+    --accent-hover: #7c3aed;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--primary-text);
+    overflow: hidden;
+}
+
+#app { display: flex; height: 100vh; }
+
+.animated-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(45deg, #0f172a, #1e293b, #4a044e, #2e1065);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.sidebar {
+    width: 250px;
+    background: var(--sidebar-color);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+}
+
+.profile { text-align: center; margin-bottom: 3rem; }
+.profile img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-color);
+    margin-bottom: 0.5rem;
+}
+
+.nav-menu { list-style: none; }
+.nav-link {
+    display: flex;
+    align-items: center;
+    color: var(--primary-text);
+    text-decoration: none;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
+}
+.nav-link i { font-size: 1.2rem; width: 30px; text-align: center; margin-right: 1rem; }
+.nav-link:hover, .nav-link.active { background-color: var(--accent-color); color: white; }
+.nav-category {
+    padding: 1rem 1rem 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--secondary-text);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.content { flex-grow: 1; padding: 2rem; overflow-y: auto; }
+
+.card {
+    background: var(--card-color);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.page-title img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid var(--accent-color);
+}
+
+
+input, select, textarea {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--secondary-text);
+    border-radius: 8px;
+    color: var(--primary-text);
+    font-family: 'Poppins', sans-serif;
+}
+
+button {
+    padding: 0.8rem 1.5rem;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+button:hover { background: var(--accent-hover); }
+
+/* Schedule Table Styles */
+.schedule-table { width: 100%; border-collapse: separate; border-spacing: 0.5rem; }
+.schedule-table th, .schedule-table td { padding: 1rem; text-align: center; }
+.schedule-table th { color: var(--secondary-text); font-weight: 600; }
+.schedule-table td span { display: block; width: 100%; padding: 0.75rem 0.5rem; border-radius: 8px; font-weight: 500; font-size: 0.9rem; }
+
+/* Dashboard Styles */
+.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+.stat-card { text-align: center; color: white; }
+.stat-card i { font-size: 2.5rem; margin-bottom: 1rem; }
+.stat-card h3 { font-size: 1.8rem; }
+.stat-card p { opacity: 0.9; }
+.stat-card-green { background: linear-gradient(135deg, #10b981, #22c55e); }
+.stat-card-yellow { background: linear-gradient(135deg, #f59e0b, #facc15); }
+.stat-card-blue { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+
+.section-title { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 1rem; }
+.dashboard-bottom-grid {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+.chart-container { min-height: 400px; }
+.reference-card h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+.reference-card ul { list-style: none; padding: 0; }
+.reference-card li { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.reference-card li:last-child { border-bottom: none; }
+.reference-card strong { font-weight: 500; color: var(--secondary-text); }
+.reference-card span { font-weight: 600; color: var(--primary-text); }
+@media (max-width: 992px) {
+    .dashboard-bottom-grid { grid-template-columns: 1fr; }
+}
+
+/* Subject Colors */
+.subject-eim { background-color: #e0e7ff; color: #3730a3; }
+.subject-dsp { background-color: #dcfce7; color: #166534; }
+.subject-adc { background-color: #f3e8ff; color: #6b21a8; }
+.subject-mpmc { background-color: #fce7f3; color: #9d174d; }
+.subject-im { background-color: #e0e7ff; color: #3730a3; }
+.subject-break { background-color: transparent; color: #ef4444; font-style: italic; }
+.subject-mpmc-lab { background-color: #ec4899; color: #ffffff; font-weight: 600; }
+.subject-eim-lab { background-color: #3b82f6; color: #ffffff; font-weight: 600; }
+.subject-dsp-lab { background-color: #22c55e; color: #ffffff; font-weight: 600; }
+.subject-adc-lab { background-color: #a855f7; color: #ffffff; font-weight: 600; }
+.subject-mini-project { background-color: #14b8a6; color: #ffffff; font-weight: 600; }
+
+/* --- Attendance Tracker Styles --- */
+.attendance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+.subject-card {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.subject-header { display: flex; justify-content: space-between; align-items: flex-start; }
+.subject-title { font-size: 1.25rem; font-weight: 600; }
+.subject-percentage { font-size: 1rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 999px; }
+.percentage-red { background-color: #ef4444; color: white; }
+.percentage-yellow { background-color: #f59e0b; color: white; }
+.percentage-green { background-color: #22c55e; color: white; }
+.progress-bar-container { width: 100%; background-color: rgba(15, 23, 42, 0.8); border-radius: 999px; height: 0.75rem; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 999px; transition: width 0.3s ease; }
+.progress-bar-red { background-color: #ef4444; }
+.progress-bar-yellow { background-color: #f59e0b; }
+.progress-bar-green { background-color: #22c55e; }
+.attendance-details { font-size: 0.8rem; color: var(--secondary-text); }
+.attendance-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
+.attendance-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    padding: 0;
+}
+.attendance-actions .present-btn { background-color: #22c55e; }
+.attendance-actions .present-btn:hover { background-color: #16a34a; }
+.attendance-actions .absent-btn { background-color: #ef4444; }
+.attendance-actions .absent-btn:hover { background-color: #dc2626; }
+.subject-utils button {
+    background: none;
+    color: var(--secondary-text);
+    padding: 0.5rem;
+}
+.subject-utils button:hover { color: var(--primary-text); }
+.add-subject-form { display: flex; gap: 0.5rem; }
+.add-subject-form input { margin-bottom: 0; }
+.add-subject-form button { padding: 0.8rem; flex-shrink: 0; line-height: 1; }
+
+/* --- Assignment Tracker Styles --- */
+.add-assignment-form { display: grid; grid-template-columns: 2fr 1fr auto; gap: 0.75rem; align-items: center; }
+.add-assignment-form input { margin-bottom: 0; }
+.add-assignment-form button { padding: 0.8rem; flex-shrink: 0; line-height: 1; }
+.assignment-list { display: grid; gap: 1rem; }
+.assignment-card { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; }
+.assignment-title { font-size: 1.1rem; font-weight: 600; color: var(--primary-text); }
+.assignment-deadline { font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem; }
+.deadline-red { color: #f87171; }
+.deadline-yellow { color: #facc15; }
+.deadline-green { color: #4ade80; }
+.deadline-gray { color: var(--secondary-text); }
+.delete-assignment-btn { background: none; color: var(--secondary-text); padding: 0.5rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+.delete-assignment-btn:hover { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; }
+.no-assignments-card { text-align: center; padding: 2rem; color: var(--secondary-text); }
+.no-assignments-card i { font-size: 2rem; margin-bottom: 0.5rem; }
+@media (max-width: 640px) {
+    .add-assignment-form { grid-template-columns: 1fr; }
+    .add-assignment-form input, .add-assignment-form button { margin-bottom: 0.5rem; }
+    .add-assignment-form button { margin-bottom: 0; }
+}
+
+/* --- Modal Styles --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+.modal-content {
+    background: var(--card-color);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+}
+#modal-title { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary-text); }
+#modal-body { margin-bottom: 2rem; color: var(--secondary-text); }
+.modal-actions { display: flex; justify-content: flex-end; gap: 1rem; }
+.modal-actions button { padding: 0.6rem 1.2rem; }
+#modal-cancel-btn { background-color: var(--secondary-text); }
+#modal-confirm-btn { background-color: #ef4444; } /* red */
+
+/* --- LeetCode Stats Page --- */
+.leetcode-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+.stat-input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.stat-input label { display: block; font-size: 0.9rem; color: var(--secondary-text); margin-bottom: 0.5rem; }
+.stat-input input { margin-bottom: 0; }
+.streak-calendar-container h3 { font-size: 1.2rem; margin-bottom: 1rem; text-align: center; }
+.streak-calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.25rem; }
+.streak-calendar-header { text-align: center; font-size: 0.8rem; color: var(--secondary-text); }
+.streak-calendar-day { display: flex; align-items: center; justify-content: center; aspect-ratio: 1/1; border-radius: 50%; cursor: pointer; font-size: 0.8rem; transition: background-color 0.2s; }
+.streak-calendar-day.other-month { color: var(--secondary-text); opacity: 0.5; cursor: default; }
+.streak-calendar-day.today { border: 1px solid var(--accent-color); }
+.streak-calendar-day.marked { background-color: var(--accent-color); color: white; }
+.streak-info { text-align: center; margin-top: 1rem; color: var(--secondary-text); font-size: 0.9rem; }
+.streak-info span { color: var(--primary-text); font-weight: 600; }
+.leetcode-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.leetcode-chart-container { min-height: 350px; }
+@media (max-width: 992px) {
+    .leetcode-grid, .leetcode-charts { grid-template-columns: 1fr; }
+}
+
+/* --- CP Calendar Styles --- */
+.contest-filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+.contest-filters button {
+    background-color: transparent;
+    border: 1px solid var(--secondary-text);
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+}
+.contest-filters button.active {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+.contest-list { display: grid; gap: 1rem; }
+.contest-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+}
+.contest-platform-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-align: center;
+    line-height: 1.2;
+}
+/* Platform specific colors */
+.platform-leetcode { background-color: #f59e0b; color: #422006;}
+.platform-codeforces { background-color: #ef4444; color: white;}
+.platform-codechef { background-color: #d2a679; color: #422006;}
+.platform-atcoder { background-color: #374151; color: white;}
+.platform-hackerearth { background-color: #2563eb; color: white;}
+.platform-hackerrank { background-color: #22c55e; color: white;}
+.platform-other { background-color: var(--secondary-text); color: var(--background-color); }
+
+.contest-details h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+.contest-details p {
+    font-size: 0.9rem;
+    color: var(--secondary-text);
+}
+.contest-countdown {
+    text-align: right;
+}
+.countdown-timer {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 0.25rem;
+}
+.contest-status {
+    font-size: 0.9rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    color: white;
+}
+.status-ongoing { background-color: #ef4444; }
+.status-upcoming { background-color: #22c55e; }
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    font-size: 1.5rem;
+    gap: 1rem;
+}
+.loading-spinner i {
+    animation: spin 1.5s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
