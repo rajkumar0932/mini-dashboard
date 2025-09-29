@@ -476,10 +476,17 @@ document.addEventListener('DOMContentLoaded', () => {
             'Problems Solved': Math.min((getTotalProblemsSolved() / 500) * 100, 100)
         };
 
+        const chartLabels = Object.keys(performanceData).map(label => {
+            if (label === 'Problems Solved') {
+                return ['Problems', 'Solved']; // This creates the two-line label
+            }
+            return label;
+        });
+
         performanceChartInstance = new Chart(ctx, {
             type: 'radar',
             data: {
-                labels: Object.keys(performanceData),
+                labels: chartLabels,
                 datasets: [{
                     label: 'Lifetime Performance',
                     data: Object.values(performanceData),
@@ -495,6 +502,12 @@ document.addEventListener('DOMContentLoaded', () => {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 5,
+                        right: 15,
+                    }
+                },
                 scales: {
                     r: {
                         angleLines: { color: 'rgba(226, 232, 240, 0.2)' },
@@ -771,7 +784,6 @@ document.addEventListener('DOMContentLoaded', () => {
             menuToggleBtn.addEventListener('click', () => {
                 sidebar.classList.toggle('active');
             });
-            // Close sidebar when a nav link is clicked on mobile
             navLinks.forEach(link => {
                 link.addEventListener('click', () => {
                     if (sidebar.classList.contains('active')) {
@@ -779,7 +791,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
             });
-            // Close sidebar when clicking on the content area
             contentArea.addEventListener('click', () => {
                 if (sidebar.classList.contains('active')) {
                     sidebar.classList.remove('active');
