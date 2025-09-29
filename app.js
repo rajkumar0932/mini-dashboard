@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Attach event listeners for the specific page
         if (pageName === 'dashboard') {
             renderPerformanceChart();
-            setupDashboardListeners(); // Add listeners for dashboard-specific elements
+            setupDashboardListeners();
         }
         if (pageName === 'attendance') {
             renderAttendanceTracker();
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const newCgpa = parseFloat(cgpaInput.value);
                 if (!isNaN(newCgpa) && newCgpa >= 0 && newCgpa <= 10) {
                     userCGPA = newCgpa;
-                    renderPage('dashboard'); // Re-render the dashboard to show updated CGPA
+                    renderPage('dashboard');
                 } else {
                     openModal({
                         title: 'Invalid Input',
@@ -472,7 +472,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const performanceData = {
             'Attendance %': calculateOverallAttendance().percentage,
-            'CGPA': (userCGPA / 10) * 100, // Scale CGPA to percentage
+            'CGPA': (userCGPA / 10) * 100,
             'Problems Solved': Math.min((getTotalProblemsSolved() / 500) * 100, 100)
         };
 
@@ -516,7 +516,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             let label = context.dataset.label || '';
                             if (label) { label += ': '; }
                             if (context.parsed.r !== null) {
-                                // De-scale CGPA for tooltip
                                 if (context.label === 'CGPA') {
                                     label += ((context.parsed.r / 100) * 10).toFixed(2);
                                 } else {
@@ -763,6 +762,15 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPage('dashboard');
         } else {
             console.error("Default page link not found. Cannot initialize app.");
+        }
+        
+        // --- MOBILE NAVIGATION ---
+        const menuToggleBtn = document.getElementById('menu-toggle-btn');
+        const sidebar = document.querySelector('.sidebar');
+        if (menuToggleBtn && sidebar) {
+            menuToggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
         }
     }
 
