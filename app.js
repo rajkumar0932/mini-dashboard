@@ -771,6 +771,20 @@ document.addEventListener('DOMContentLoaded', () => {
             menuToggleBtn.addEventListener('click', () => {
                 sidebar.classList.toggle('active');
             });
+            // Close sidebar when a nav link is clicked on mobile
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (sidebar.classList.contains('active')) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+            // Close sidebar when clicking on the content area
+            contentArea.addEventListener('click', () => {
+                if (sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
         }
     }
 
