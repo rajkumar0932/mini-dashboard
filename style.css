@@ -386,6 +386,8 @@ button:hover { background: var(--accent-hover); }
 
     .content {
         padding-top: 5rem;
+        padding-left: 1rem; /* Add some padding for smaller screens */
+        padding-right: 1rem;
     }
     
     .mobile-header {
@@ -406,6 +408,10 @@ button:hover { background: var(--accent-hover); }
         font-size: 2rem;
     }
 
+    .chart-container.card {
+        padding: 0.5rem; /* Give chart more space on mobile */
+    }
+
     /* --- Responsive Schedule Styles --- */
     .schedule-table thead {
         display: none;
@@ -418,9 +424,11 @@ button:hover { background: var(--accent-hover); }
         padding: 1rem;
     }
     .schedule-table td {
-        display: block;
+        display: flex; /* Use flexbox for alignment */
+        justify-content: space-between; /* Space out label and content */
+        align-items: center; /* Vertically center */
         text-align: right;
-        padding: 0.5rem;
+        padding: 0.75rem 0.5rem;
         border-bottom: 1px solid rgba(255,255,255,0.05);
     }
     .schedule-table td:last-child {
@@ -428,8 +436,8 @@ button:hover { background: var(--accent-hover); }
     }
     .schedule-table td::before {
         content: attr(data-label);
-        float: left;
         font-weight: 600;
         color: var(--secondary-text);
+        text-align: left; /* Ensure label is left-aligned */
     }
 }
